@@ -73,7 +73,7 @@ module Dragonfly
       else
         scheme = opts[:scheme] || url_scheme
         host   = opts[:host]   || url_host || (
-          bucket_name =~ SUBDOMAIN_PATTERN ? "#{bucket_name}.s3.amazonaws.com" : "s3.amazonaws.com/#{bucket_name}"
+          bucket_name =~ SUBDOMAIN_PATTERN ? "#{bucket_name}.#{opts[:region]}" : "#{opts[:region]}/#{bucket_name}"
         )
         "#{scheme}://#{host}/#{full_path(uid)}"
       end
