@@ -11,13 +11,13 @@ module Dragonfly
 
     REGIONS = {
       'us-east-1' => 'rest.s3for.me',  #default
-      'us-west-1' => 's3-us-west-1.amazonaws.com',
+      'us-west-1' => 'rest.s3for.me',
       'us-west-2' => 's3-us-west-2.amazonaws.com',
       'ap-northeast-1' => 's3-ap-northeast-1.amazonaws.com',
       'ap-southeast-1' => 's3-ap-southeast-1.amazonaws.com',
       'ap-southeast-2' => 's3-ap-southeast-2.amazonaws.com',
       'eu-west-1' => 's3-eu-west-1.amazonaws.com',
-      'sa-east-1' => 's3-sa-east-1.amazonaws.com'
+      'sa-east-1' => 'rest.s3for.me'
     }
 
     SUBDOMAIN_PATTERN = /^[a-z0-9][a-z0-9.-]+[a-z0-9]$/
@@ -73,7 +73,7 @@ module Dragonfly
       else
         scheme = opts[:scheme] || url_scheme
         host   = opts[:host]   || url_host || (
-          bucket_name =~ SUBDOMAIN_PATTERN ? "#{bucket_name}.#{opts[:region]}" : "#{opts[:region]}/#{bucket_name}"
+          bucket_name =~ SUBDOMAIN_PATTERN ? "#{bucket_name}.#{domain}" : "#{domain}/#{bucket_name}"
         )
         "#{scheme}://#{host}/#{full_path(uid)}"
       end
@@ -90,7 +90,9 @@ module Dragonfly
           :aws_access_key_id => access_key_id,
           :aws_secret_access_key => secret_access_key,
           :region => region,
-          :use_iam_profile => use_iam_profile
+          :use_iam_profile => use_iam_profile,
+	  :host => domain,
+	  :scheme => "http"
         }.reject {|name, option| option.nil?})
         storage.sync_clock
         storage
